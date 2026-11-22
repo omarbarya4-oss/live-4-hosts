@@ -15,7 +15,7 @@
   #join input { background:#0f1115; color:var(--text); }
   button.primary { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; }
   #stage { position:relative; aspect-ratio:16/9; background:#000; border-radius:16px; overflow:hidden; border:1px solid var(--line); }
-  #stage video { width:100%; height:100%; object-fit:cover; background:#000; }
+  #stage video { width:100%; height:100%; object-fit:contain; background:#000; } /* بدون قص حتى لو كان البث عموديًا */
   #stageName { position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,.6); padding:6px 12px; border-radius:20px; font-size:14px; }
   #empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); }
   #cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
@@ -61,7 +61,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.7/dist/livekit-client.umd.min.js"></script>
 <script>
-const { Room, RoomEvent, Track } = LivekitClient;
+const { Room, RoomEvent, Track, VideoQuality } = LivekitClient;
 
 let room = null;
 let selected = null;            // مثل "host-2"
@@ -87,7 +87,8 @@ async function join() {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'فشل الدخول');
 
-    room = new Room({ adaptiveStream: true });
+    // adaptiveStream مغلق: نطلب دائمًا أعلى جودة، والخادم يخفّضها فقط إن ضعف إنترنت المشاهد
+    room = new Room({ adaptiveStream: false });
     wire(room);
     // autoSubscribe:false => لا نستقبل أي مقدم إلا الذي نختاره
     await room.connect(data.url, data.token, { autoSubscribe: false });
@@ -153,6 +154,7 @@ function applySubscriptions() {
     p.trackPublications.forEach((pub) => {
       const want = p.identity === selected;
       if (pub.isSubscribed !== want) pub.setSubscribed(want);
+      if (want && pub.kind === Track.Kind.Video) pub.setVideoQuality(VideoQuality.HIGH);
     });
   });
 }
@@ -161,6 +163,7 @@ function onTrackSubscribed(track, pub, participant) {
   if (participant.identity !== selected) return;
   const el = track.attach();
   if (track.kind === Track.Kind.Video) {
+    pub.setVideoQuality(VideoQuality.HIGH);
     el.setAttribute('playsinline', '');
     $('stage').insertBefore(el, $('stage').firstChild);
     $('empty').hidden = true;
