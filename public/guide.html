@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل الدخول عبر Teams · من المكان تبدأ الفكرة</title>
+<meta name="theme-color" content="#060b19">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
+<style>
+  .hero.small { padding-top: 5vh; }
+  .hero.small .headline { font-size: clamp(34px, 7vw, 70px); }
+  .hero.small .subhead { font-size: clamp(18px, 3.4vw, 30px); }
+  .section { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
+  .sec-title { font-family: var(--display); font-size: clamp(22px, 3.4vw, 30px); margin: 0 0 6px; display: flex; align-items: center; gap: 10px; }
+  .sec-title .num { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 16px; color: #1b0f02; background: linear-gradient(135deg, #ffc27a, #ff8a1e); box-shadow: 0 0 18px var(--accent-glow); }
+  .sec-sub { color: var(--muted); margin: 0 0 18px; }
+
+  /* بطاقة الدخول */
+  .join-teams { margin: 7vh auto 0; padding: 24px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; align-items: center; }
+  .join-teams .btn.primary { margin-top: 16px; text-decoration: none; }
+  .creds { display: grid; gap: 10px; }
+  .cred { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(5,10,24,.65); border: 1px solid var(--line); }
+  .cred small { display: block; color: var(--muted); font-size: 12px; }
+  .cred b { font-size: clamp(15px, 4vw, 18px); letter-spacing: .5px; direction: ltr; display: inline-block; white-space: nowrap; }
+  .copy { padding: 8px 12px; font-size: 13px; }
+  .copy.done { border-color: var(--teal); color: var(--teal); }
+  .note { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 8px 0 0; }
+
+  /* العرض التوضيحي */
+  .demo-wrap { margin-top: 8vh; display: grid; grid-template-columns: 1fr 1.25fr; gap: 22px; align-items: start; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .step { display: flex; gap: 14px; padding: 14px 16px; border-radius: 16px; background: var(--glass); border: 1px solid var(--line); transition: border-color .35s, box-shadow .35s, transform .35s; cursor: pointer; }
+  .step .n { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 800 16px var(--display); color: var(--accent); border: 1.5px solid rgba(255,154,46,.6); transition: background .35s, color .35s; }
+  .step h4 { margin: 2px 0 4px; font-family: var(--display); font-size: 18px; }
+  .step p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .step.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(255,154,46,.25); transform: translateX(-4px); }
+  .step.active .n { background: linear-gradient(135deg, #ffc27a, #ff8a1e); color: #1b0f02; border-color: transparent; }
+  .kbd { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 6px; background: rgba(255,154,46,.14); border: 1px solid rgba(255,154,46,.45); color: var(--accent-2); font-weight: 700; font-size: 13px; white-space: nowrap; }
+
+  /* محاكاة نافذة Teams */
+  .mock { position: relative; border-radius: 18px; overflow: hidden; background: #1b1a2e; border: 1px solid rgba(255,154,46,.35); box-shadow: 0 0 60px rgba(255,154,46,.14), 0 30px 80px rgba(0,0,0,.5); aspect-ratio: 16/11; user-select: none; }
+  .mock-bar { position: absolute; top: 0; inset-inline: 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #24233a; border-bottom: 1px solid rgba(255,255,255,.06); direction: ltr; }
+  .mock-title { color: #cfd3e6; font-size: 12px; font-family: var(--body); direction: rtl; }
+  .tools { display: flex; gap: 6px; }
+  .tool { width: 44px; height: 36px; border-radius: 8px; display: grid; place-items: center; color: #d9dbea; font-size: 10px; line-height: 1.1; text-align: center; transition: background .25s, box-shadow .25s; }
+  .tool svg { width: 16px; height: 16px; display: block; margin: 0 auto 2px; }
+  .tool.rooms.on { background: rgba(255,154,46,.25); box-shadow: 0 0 0 1.5px var(--accent), 0 0 16px var(--accent-glow); color: #fff; }
+  .tool.leave { width: 54px; background: #c4314b; color: #fff; }
+  .mock-stage { position: absolute; top: 48px; bottom: 0; left: 0; right: 0; display: grid; place-items: center; padding: 16px; transition: right .45s cubic-bezier(.2,.7,.2,1); }
+  .mock.panel-open .mock-stage { right: 40%; }
+  .room-view { width: 100%; height: 100%; border-radius: 12px; background: radial-gradient(circle at 50% 30%, #34315a, #1f1d35 70%); display: grid; place-items: center; text-align: center; position: relative; overflow: hidden; }
+  .room-view .who { width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 10px; display: grid; place-items: center; font: 800 28px var(--display); color: #1b0f02; background: linear-gradient(135deg, #ffc27a, #ff8a1e); position: relative; }
+  .room-view .who::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 3px solid var(--teal); opacity: 0; }
+  .room-view.speaking .who::after { animation: talk 1s ease-in-out infinite; }
+  @keyframes talk { 0%,100% { opacity: .2; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+  .room-view .label { color: #fff; font: 700 17px var(--display); }
+  .room-view .sub { color: #a7abc6; font-size: 12px; margin-top: 4px; }
+  .room-view .badge { position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 999px; font-size: 11px; background: rgba(70,227,183,.15); border: 1px solid rgba(70,227,183,.5); color: #bdf6e5; opacity: 0; transform: translateY(-6px); transition: .35s; }
+  .room-view.in-room .badge { opacity: 1; transform: none; }
+  .swap { animation: swap .5s ease; }
+  @keyframes swap { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+
+  .panel { position: absolute; top: 48px; bottom: 0; right: 0; width: 40%; background: #24233a; border-left: 1px solid rgba(255,255,255,.07); padding: 12px; transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.7,.2,1); display: flex; flex-direction: column; gap: 8px; }
+  .mock.panel-open .panel { transform: none; }
+  .panel h5 { margin: 0 0 4px; color: #fff; font: 700 14px var(--display); }
+  .room-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 9px; border-radius: 9px; background: rgba(255,255,255,.04); border: 1px solid transparent; transition: border-color .25s, background .25s; }
+  .room-row span { color: #e5e6f2; font-size: 12px; }
+  .room-row .j { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #fff; background: #5b5fc7; }
+  .room-row.current { border-color: rgba(70,227,183,.5); background: rgba(70,227,183,.08); }
+  .room-row.current .j { background: transparent; color: var(--teal); }
+  .room-row.target { border-color: var(--accent); background: rgba(255,154,46,.1); }
+
+  .cursor { position: absolute; z-index: 5; width: 22px; height: 22px; left: 50%; top: 60%; transition: left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1); pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+  .cursor svg { width: 100%; height: 100%; }
+  .ripple { position: absolute; z-index: 4; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; animation: ripple .6s ease-out forwards; }
+  @keyframes ripple { from { transform: scale(.3); opacity: 1; } to { transform: scale(3); opacity: 0; } }
+  .caption { margin-top: 12px; text-align: center; color: var(--accent-2); font: 700 16px var(--display); min-height: 26px; transition: opacity .3s; }
+  .demo-ctrl { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+  .demo-ctrl .btn { padding: 8px 14px; font-size: 13px; }
+
+  /* نصائح */
+  .tips { margin: 8vh auto 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tip { padding: 18px 16px; text-align: center; }
+  .tip .ic { width: 46px; height: 46px; margin: 0 auto 10px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background: rgba(255,154,46,.12); border: 1px solid rgba(255,154,46,.4); }
+  .tip h4 { margin: 0 0 6px; font-family: var(--display); font-size: 17px; }
+  .tip p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .back { text-align: center; margin: 0 0 50px; color: var(--muted); font-size: 14px; }
+  .back a { color: var(--accent-2); }
+
+  @media (max-width: 860px) {
+    .join-teams, .demo-wrap { grid-template-columns: 1fr; }
+    .tips { grid-template-columns: 1fr 1fr; }
+    .mock { aspect-ratio: 4/3.4; }
+    .tool { width: 36px; font-size: 0; } .tool svg { margin: 0 auto; }
+    .tool.leave { width: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero small">
+  <p class="eyebrow reveal">🧭 دليل المشاهد · الدخول عبر Microsoft Teams</p>
+  <h1 class="headline reveal d1">من <span class="place"><span class="pin-wrap"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" fill="#ff9a2e"/><circle cx="12" cy="10" r="2.8" fill="#1a0e02"/></svg><i class="ping"></i></span>المكان</span> تبدأ الفكرة</h1>
+  <h2 class="subhead reveal d2">اليوم العالمي لنظم المعلومات الجغرافية</h2>
+  <p class="tagline reveal d3"><span>قوة تدفع الغاية والابتكار</span><span class="en">GIS: Powering Purpose and Innovation</span></p>
+</header>
+
+<div class="info reveal d4">
+  <div class="item">
+    <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="6" y="10" width="36" height="32" rx="6"/><path d="M6 19h36M15 6v8M33 6v8"/><g fill="currentColor" stroke="none"><rect x="13" y="25" width="5" height="4" rx="1"/><rect x="21.5" y="25" width="5" height="4" rx="1"/><rect x="30" y="25" width="5" height="4" rx="1"/><rect x="13" y="32" width="5" height="4" rx="1"/><rect x="21.5" y="32" width="5" height="4" rx="1"/></g></svg>
+    <span>23 نوفمبر 2026</span>
+  </div>
+  <div class="item">
+    <svg class="ico" viewBox="0 0 48 48"><path d="M24 44s14-12.2 14-24a14 14 0 1 0-28 0c0 11.8 14 24 14 24Z" fill="currentColor"/><circle cx="24" cy="20" r="5.5" fill="#060b19"/></svg>
+    <span>دائرة تطوير الأداء المدرسي<br>معمل التقنيات الجغرافية الحديثة</span>
+  </div>
+  <div class="item">
+    <svg class="ico" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="currentColor"/><path d="M24 13v12l7 5" stroke="#060b19" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>
+    <span>8ص - 12م</span>
+  </div>
+  <svg class="curve" viewBox="0 0 800 70" preserveAspectRatio="none">
+    <path id="infoCurve" d="M 10 8 Q 400 110 790 8"/>
+    <circle r="5" cx="10" cy="8"/><circle r="5" cx="790" cy="8"/>
+    <circle r="6"><animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"><mpath href="#infoCurve"/></animateMotion></circle>
+  </svg>
+</div>
+
+<!-- الدخول -->
+<section class="section">
+  <div class="glass join-teams reveal d5">
+    <div>
+      <h3 class="sec-title"><span class="num">1</span>ادخل الاجتماع</h3>
+      <p class="sec-sub" style="margin:0">أربعة مقدمين يتحدثون في نفس الوقت، كل واحد في غرفة. أنت تختار الغرفة التي تريد سماعها، وتنتقل بينها متى شئت.</p>
+      <a class="btn primary" href="https://teams.microsoft.com/meet/3323326792994097?p=UPDb9htqnAKJvEW35D" target="_blank" rel="noopener">الانضمام عبر Microsoft Teams</a>
+      <p class="note">لا تحتاج حسابًا: اختر «المتابعة في هذا المتصفح» أو افتح تطبيق Teams، واكتب اسمك، ثم «انضمام الآن».</p>
+    </div>
+    <div class="creds">
+      <div class="cred"><div><small>معرّف الاجتماع</small><b id="mid">332 332 679 299 409 7</b></div><button class="btn copy" data-copy="mid">نسخ</button></div>
+      <div class="cred"><div><small>رمز المرور</small><b id="mpw">GW95jP9G</b></div><button class="btn copy" data-copy="mpw">نسخ</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- الشرح المتحرك -->
+<section class="section">
+  <div class="demo-wrap">
+    <div>
+      <h3 class="sec-title"><span class="num">2</span>تنقّل بين الغرف</h3>
+      <p class="sec-sub">تابع العرض المتحرك، أو اضغط على أي خطوة لمشاهدتها.</p>
+      <ol class="steps" id="steps">
+        <li class="step" data-i="0"><span class="n">1</span><div><h4>اضغط زر الغرف</h4><p>في الشريط العلوي للاجتماع اضغط <span class="kbd">Rooms · الغرف</span>. على الجوال تجده داخل زر <span class="kbd">… المزيد</span>.</p></div></li>
+        <li class="step" data-i="1"><span class="n">2</span><div><h4>اختر غرفة المقدم</h4><p>تظهر قائمة الغرف الأربع. اضغط <span class="kbd">Join · انضمام</span> بجانب الغرفة التي تريدها.</p></div></li>
+        <li class="step" data-i="2"><span class="n">3</span><div><h4>استمع للمقدم</h4><p>أنت الآن داخل الغرفة، ولا تسمع إلا مقدمها. لا تحتاج تشغيل الميكروفون أو الكاميرا.</p></div></li>
+        <li class="step" data-i="3"><span class="n">4</span><div><h4>انتقل لمقدم آخر</h4><p>اضغط <span class="kbd">Rooms</span> مرة أخرى واختر غرفة ثانية، أو ارجع للاجتماع الرئيسي متى أردت.</p></div></li>
+      </ol>
+    </div>
+
+    <div>
+      <div class="mock" id="mock">
+        <div class="mock-bar">
+          <div class="tools">
+            <div class="tool leave"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 15c5-5 13-5 18 0l-2.5 2.5-3-2V12c-2-.7-5-.7-7 0v3.5l-3 2Z"/></svg>مغادرة</div>
+          </div>
+          <div class="mock-title" id="mockTitle">خطة احتياطية: البث المباشر</div>
+          <div class="tools">
+            <div class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4Z"/></svg>دردشة</div>
+            <div class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-4 3.4-6 6.5-6s5.7 2 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .6 3.3 2.6 3.6 6"/></svg>الأشخاص</div>
+            <div class="tool rooms" id="roomsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>الغرف</div>
+            <div class="tool"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>المزيد</div>
+          </div>
+        </div>
+        <div class="mock-stage">
+          <div class="room-view" id="roomView">
+            <span class="badge">● أنت داخل الغرفة</span>
+            <div><div class="who" id="who">◎</div><div class="label" id="roomLabel">الاجتماع الرئيسي</div><div class="sub" id="roomSub">في انتظار اختيار غرفة…</div></div>
+          </div>
+        </div>
+        <aside class="panel" id="panel">
+          <h5>الغرف</h5>
+          <div class="room-row" data-r="1"><span>غرفة المقدم 1</span><b class="j">Join</b></div>
+          <div class="room-row" data-r="2"><span>غرفة المقدم 2</span><b class="j">Join</b></div>
+          <div class="room-row" data-r="3"><span>غرفة المقدم 3</span><b class="j">Join</b></div>
+          <div class="room-row" data-r="4"><span>غرفة المقدم 4</span><b class="j">Join</b></div>
+        </aside>
+        <div class="cursor" id="cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L9 19z" fill="#fff" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="caption" id="caption"></div>
+      <div class="demo-ctrl"><button class="btn ghost" id="replay">↺ إعادة العرض</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- نصائح -->
+<section class="section">
+  <div class="tips">
+    <div class="tip glass"><div class="ic">🎙️</div><h4>الميكروفون مغلق</h4><p>أبقِ الميكروفون والكاميرا مغلقين حتى لا يُسمع صوتك داخل الغرفة.</p></div>
+    <div class="tip glass"><div class="ic">🔁</div><h4>تنقّل بحرية</h4><p>يمكنك تغيير الغرفة في أي وقت، بدون الخروج من الاجتماع.</p></div>
+    <div class="tip glass"><div class="ic">🎧</div><h4>سماعات أفضل</h4><p>السماعات تعطيك صوتًا أوضح وتمنع الصدى عن من حولك.</p></div>
+    <div class="tip glass"><div class="ic">📶</div><h4>انقطع الاتصال؟</h4><p>أعد فتح الرابط ثم اضغط «الغرف» واختر غرفتك من جديد.</p></div>
+  </div>
+  <p class="back">البث الأساسي على الموقع: <a href="/">live-4-hosts.onrender.com</a></p>
+</section>
+
+<script src="/theme.js"></script>
+<script>
+// نسخ المعرف ورمز المرور
+document.querySelectorAll('.copy').forEach((b) => {
+  b.onclick = async () => {
+    const txt = document.getElementById(b.dataset.copy).textContent.replace(/\s/g, b.dataset.copy === 'mid' ? ' ' : '');
+    try { await navigator.clipboard.writeText(txt); } catch (e) {}
+    b.textContent = 'تم ✓'; b.classList.add('done');
+    setTimeout(() => { b.textContent = 'نسخ'; b.classList.remove('done'); }, 1600);
+  };
+});
+
+// العرض المتحرك
+const mock = document.getElementById('mock');
+const cursor = document.getElementById('cursor');
+const roomsBtn = document.getElementById('roomsBtn');
+const roomView = document.getElementById('roomView');
+const steps = [...document.querySelectorAll('.step')];
+const caption = document.getElementById('caption');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let current = 0;           // الغرفة الحالية (0 = الرئيسي)
+let timers = [];
+
+const wait = (ms) => new Promise((r) => timers.push(setTimeout(r, ms)));
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+function pointAt(el) {
+  const m = mock.getBoundingClientRect(), r = el.getBoundingClientRect();
+  cursor.style.left = (r.left - m.left + r.width * 0.55) + 'px';
+  cursor.style.top = (r.top - m.top + r.height * 0.55) + 'px';
+}
+function click(el) {
+  const m = mock.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const d = document.createElement('i');
+  d.className = 'ripple';
+  d.style.left = (r.left - m.left + r.width * 0.55) + 'px';
+  d.style.top = (r.top - m.top + r.height * 0.55) + 'px';
+  mock.appendChild(d); setTimeout(() => d.remove(), 700);
+}
+function setStep(i, text) {
+  steps.forEach((s, k) => s.classList.toggle('active', k === i));
+  caption.textContent = text;
+}
+function enterRoom(n) {
+  current = n;
+  document.querySelectorAll('.room-row').forEach((r) => {
+    const me = +r.dataset.r === n;
+    r.classList.toggle('current', me); r.classList.remove('target');
+    r.querySelector('.j').textContent = me ? '✓ هنا' : 'Join';
+  });
+  roomView.classList.remove('swap'); void roomView.offsetWidth; roomView.classList.add('swap');
+  roomView.classList.toggle('in-room', n > 0);
+  roomView.classList.toggle('speaking', n > 0);
+  document.getElementById('who').textContent = n > 0 ? n : '◎';
+  document.getElementById('roomLabel').textContent = n > 0 ? `غرفة المقدم ${n}` : 'الاجتماع الرئيسي';
+  document.getElementById('roomSub').textContent = n > 0 ? 'تسمع هذا المقدم فقط 🔊' : 'في انتظار اختيار غرفة…';
+}
+function reset() {
+  mock.classList.remove('panel-open'); roomsBtn.classList.remove('on');
+  enterRoom(0);
+  cursor.style.left = '50%'; cursor.style.top = '62%';
+}
+
+async function openRoomsAndJoin(n, stepOpen, stepJoin) {
+  setStep(stepOpen.i, stepOpen.t);
+  pointAt(roomsBtn); await wait(1000);
+  click(roomsBtn); roomsBtn.classList.add('on'); mock.classList.add('panel-open'); await wait(1100);
+  const row = document.querySelector(`.room-row[data-r="${n}"]`);
+  setStep(stepJoin.i, stepJoin.t);
+  row.classList.add('target'); pointAt(row.querySelector('.j')); await wait(1100);
+  click(row.querySelector('.j')); await wait(300);
+  enterRoom(n); mock.classList.remove('panel-open'); roomsBtn.classList.remove('on');
+}
+
+async function play(from = 0) {
+  clearTimers(); reset();
+  await wait(500);
+  if (from <= 1) {
+    await openRoomsAndJoin(2, { i: 0, t: 'اضغط «الغرف» في الشريط العلوي' }, { i: 1, t: 'اختر «غرفة المقدم 2» واضغط Join' });
+  } else { enterRoom(2); }
+  setStep(2, 'أنت الآن تسمع المقدم 2 فقط');
+  cursor.style.left = '30%'; cursor.style.top = '70%';
+  await wait(2600);
+  await openRoomsAndJoin(3, { i: 3, t: 'للانتقال: اضغط «الغرف» مرة أخرى' }, { i: 3, t: 'اختر «غرفة المقدم 3» وانضم' });
+  setStep(2, 'انتقلت إلى المقدم 3 بدون الخروج من الاجتماع ✨');
+  await wait(3200);
+  play(0);
+}
+
+steps.forEach((s) => s.onclick = () => play(+s.dataset.i >= 2 ? 2 : 0));
+document.getElementById('replay').onclick = () => play(0);
+addEventListener('resize', () => { /* يعاد ضبط المؤشر في الخطوة التالية */ });
+
+if (reduce) { enterRoom(2); setStep(2, 'أنت داخل غرفة المقدم 2'); }
+else play(0);
+</script>
+</body>
+</html>
