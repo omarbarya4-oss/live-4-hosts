@@ -173,6 +173,10 @@ function applySubscriptions() {
     const isSel = p.identity === selected;
     p.trackPublications.forEach((pub) => {
       const want = pub.kind === Track.Kind.Video ? true : isSel;
+      // صوت غير المختار: نفصله ونحذفه فورًا قبل إلغاء الاشتراك
+      if (!want && pub.kind === Track.Kind.Audio && pub.track) {
+        pub.track.detach().forEach((el) => el.remove());
+      }
       if (pub.isSubscribed !== want) pub.setSubscribed(want);
       if (want && pub.kind === Track.Kind.Video) {
         pub.setVideoQuality(isSel ? VideoQuality.HIGH : VideoQuality.LOW);
@@ -199,6 +203,7 @@ function onTrackSubscribed(track, pub, participant) {
 function onTrackUnsubscribed(track) {
   // نحذف عناصر الصوت فقط؛ عناصر الفيديو ثابتة ونعيد استخدامها
   track.detach().forEach((el) => { if (el.tagName === 'AUDIO') el.remove(); });
+  $('audioBox').querySelectorAll('audio').forEach((a) => { if (!a.srcObject) a.remove(); });
   updateStage();
   render();
 }
