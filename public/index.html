@@ -3,73 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>البث المباشر</title>
+<title>من المكان تبدأ الفكرة · بث مباشر</title>
+<meta name="theme-color" content="#060b19">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
 <style>
-  :root { --bg:#0f1115; --card:#1a1d24; --line:#2a2f3a; --text:#eef0f4; --muted:#8a92a3; --accent:#ff4d5e; --ok:#3ddc84; }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,"Segoe UI",Tahoma,sans-serif; }
-  .wrap { max-width:1000px; margin:0 auto; padding:16px; }
-  h1 { font-size:20px; margin:8px 0 16px; }
-  #join { max-width:360px; margin:15vh auto; background:var(--card); border:1px solid var(--line); padding:24px; border-radius:16px; }
-  #join input, #join button { width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-size:16px; margin-top:10px; }
-  #join input { background:#0f1115; color:var(--text); }
-  button.primary { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; }
-  #err { color:#ff8a94; margin-top:10px; font-size:14px; min-height:18px; }
-  #err.info { color:var(--muted); }
+  /* الشاشة الكبيرة */
+  #stage { position: relative; aspect-ratio: 16/9; border-radius: 22px; overflow: hidden; background: rgba(3, 7, 18, .85); border: 1px solid rgba(255,154,46,.35); box-shadow: 0 0 0 1px rgba(255,154,46,.08), 0 0 60px rgba(255,154,46,.14), 0 30px 80px rgba(0,0,0,.5); }
+  #stage::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3; background: linear-gradient(120deg, rgba(255,154,46,.5), transparent 25%, transparent 75%, rgba(70,227,183,.35)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; padding: 1px; }
+  .stage-idle { position: absolute; inset: 0; display: grid; place-items: center; }
+  .stage-idle svg { width: 64px; height: 64px; color: var(--accent); opacity: .7; animation: bob 2.6s ease-in-out infinite; filter: drop-shadow(0 0 14px var(--accent)); }
+  .stage-idle .radar { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(255,154,46,.35); animation: radar 3s ease-out infinite; }
+  .stage-idle .radar.r2 { animation-delay: 1.5s; }
+  @keyframes radar { from { transform: scale(.4); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
+  #mainVideo { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; background: #000; animation: fadeIn .5s ease; }
+  #stageName { position: absolute; z-index: 2; bottom: 14px; right: 14px; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 14px; background: rgba(6, 11, 25, .72); border: 1px solid rgba(255,154,46,.4); backdrop-filter: blur(8px); display: inline-flex; align-items: center; gap: 8px; }
+  #stageName::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:8px 0 16px; }
-  .topbar h1 { margin:0; }
-  #leaveBtn { background:transparent; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:8px 16px; font-size:14px; cursor:pointer; }
-  #leaveBtn:hover { border-color:var(--accent); color:var(--accent); }
-
-  /* الشاشة الكبيرة: المقدم المختار */
-  #stage { position:relative; aspect-ratio:16/9; background:#000; border-radius:16px; overflow:hidden; border:1px solid var(--line); }
-  #mainVideo { width:100%; height:100%; object-fit:contain; background:#000; display:block; } /* بدون قص حتى لو كان البث عموديًا */
-  #mainVideo[hidden] { display:none; }
-  #stageName { position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,.6); padding:6px 12px; border-radius:20px; font-size:14px; }
-
-  /* بطاقات المقدمين الأربعة بفيديو مباشر صغير */
-  #cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
-  .card { background:var(--card); border:2px solid var(--line); border-radius:14px; padding:8px; cursor:pointer; text-align:center; transition:border-color .15s; }
-  .card.offline { opacity:.4; cursor:default; }
-  .card.selected { border-color:var(--accent); }
-  .thumb { position:relative; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; margin-bottom:8px; }
-  .thumb video { width:100%; height:100%; object-fit:cover; display:block; }
-  .thumb:not(.has-video) video { visibility:hidden; }
-  .thumb .avatar { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:40px; height:40px; border-radius:50%; background:var(--line); display:flex; align-items:center; justify-content:center; font-weight:700; }
-  .thumb.has-video .avatar { display:none; }
-  .name { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .status { font-size:12px; color:var(--muted); margin-top:4px; display:flex; align-items:center; justify-content:center; gap:6px; }
-  .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); }
-  .card:not(.offline) .dot { background:var(--accent); }
-  .card.speaking .dot { background:var(--ok); box-shadow:0 0 0 4px rgba(61,220,132,.25); }
-  #hint { text-align:center; color:var(--muted); font-size:14px; margin-top:12px; }
-  @media (max-width:640px) { #cards { grid-template-columns:repeat(2,1fr); } }
+  /* بطاقات المقدمين */
+  #cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+  .card { padding: 8px; border-radius: 16px; cursor: pointer; text-align: center; background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform .2s, border-color .25s, box-shadow .25s, opacity .3s; opacity: 0; transform: translateY(14px); animation: reveal .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .card:nth-child(2) { animation-delay: .08s; } .card:nth-child(3) { animation-delay: .16s; } .card:nth-child(4) { animation-delay: .24s; }
+  .card:not(.offline):hover { transform: translateY(-3px); border-color: rgba(255,154,46,.55); }
+  .card.offline { cursor: default; filter: saturate(.3); }
+  .card.offline .thumb, .card.offline .name { opacity: .55; }
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 30px rgba(255,154,46,.35); }
+  .thumb { position: relative; aspect-ratio: 16/9; border-radius: 11px; overflow: hidden; margin-bottom: 8px; background: radial-gradient(circle at 50% 120%, rgba(255,154,46,.18), rgba(3,7,18,.9) 70%); }
+  .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb:not(.has-video) video { visibility: hidden; }
+  .thumb .avatar { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font: 800 18px var(--display); color: var(--accent); border: 1.5px solid rgba(255,154,46,.6); background: rgba(6,11,25,.7); }
+  .thumb.has-video .avatar { display: none; }
+  .card.speaking .thumb { box-shadow: inset 0 0 0 2px var(--teal); }
+  .card.speaking .thumb::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 18px rgba(70,227,183,.55); animation: glow 1s ease-in-out infinite alternate; }
+  .name { font-family: var(--display); font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .status { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #56617a; }
+  .card:not(.offline) .dot { background: #ff4d5e; animation: live 1.6s infinite; }
+  .card.speaking .dot { background: var(--teal); box-shadow: 0 0 10px var(--teal); }
+  .card.selected .st { color: var(--accent-2); }
+  #hint { text-align: center; color: var(--muted); font-size: 14px; margin: 16px 0 30px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  #hint svg { width: 16px; height: 16px; color: var(--accent); }
+  @media (max-width: 640px) { #cards { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
 
+<!-- شاشة الدخول -->
 <div id="join">
-  <h1>ادخل كمشاهد</h1>
-  <input id="nameInput" placeholder="اسمك (اختياري)" maxlength="40">
-  <button class="primary" id="joinBtn">دخول</button>
-  <div id="err"></div>
+  <header class="hero">
+    <p class="eyebrow reveal"><span class="live-pill" style="padding:2px 8px;font-size:12px"><i></i>مباشر</span> بث مباشر لأربعة مقدمين</p>
+    <h1 class="headline reveal d1">من <span class="place"><span class="pin-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" fill="#ff9a2e"/><circle cx="12" cy="10" r="2.8" fill="#1a0e02"/></svg><i class="ping"></i></span>المكان</span> تبدأ الفكرة</h1>
+    <h2 class="subhead reveal d2">اليوم العالمي لنظم المعلومات الجغرافية</h2>
+    <p class="tagline reveal d3"><span>قوة تدفع الغاية والابتكار</span><span class="en">GIS: Powering Purpose and Innovation</span></p>
+  </header>
+
+  <div class="info reveal d4">
+    <div class="item">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><rect x="6" y="10" width="36" height="32" rx="6"/><path d="M6 19h36M15 6v8M33 6v8"/><g fill="currentColor" stroke="none"><rect x="13" y="25" width="5" height="4" rx="1"/><rect x="21.5" y="25" width="5" height="4" rx="1"/><rect x="30" y="25" width="5" height="4" rx="1"/><rect x="13" y="32" width="5" height="4" rx="1"/><rect x="21.5" y="32" width="5" height="4" rx="1"/></g></svg>
+      <span>23 نوفمبر 2026</span>
+    </div>
+    <div class="item">
+      <svg class="ico" viewBox="0 0 48 48"><path d="M24 44s14-12.2 14-24a14 14 0 1 0-28 0c0 11.8 14 24 14 24Z" fill="currentColor"/><circle cx="24" cy="20" r="5.5" fill="#060b19"/></svg>
+      <span>دائرة تطوير الأداء المدرسي<br>معمل التقنيات الجغرافية الحديثة</span>
+    </div>
+    <div class="item">
+      <svg class="ico" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="currentColor"/><path d="M24 13v12l7 5" stroke="#060b19" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>
+      <span>8ص - 12م</span>
+    </div>
+    <svg class="curve" viewBox="0 0 800 70" preserveAspectRatio="none">
+      <path id="infoCurve" d="M 10 8 Q 400 110 790 8"/>
+      <circle r="5" cx="10" cy="8"/><circle r="5" cx="790" cy="8"/>
+      <circle r="6"><animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"><mpath href="#infoCurve"/></animateMotion></circle>
+    </svg>
+  </div>
+
+  <div class="glass join-card reveal d5">
+    <h3>ادخل كمشاهد</h3>
+    <p class="sub">شاهد المقدمين الأربعة معًا، واختر من تسمع.</p>
+    <input id="nameInput" class="field" placeholder="اسمك (اختياري)" maxlength="40">
+    <button class="btn primary" id="joinBtn">دخول البث</button>
+    <div id="err" class="err"></div>
+  </div>
 </div>
 
+<!-- شاشة البث -->
 <div class="wrap" id="app" hidden>
-  <div class="topbar">
-    <h1>🔴 البث المباشر</h1>
-    <button id="leaveBtn">مغادرة</button>
+  <div class="topbar glass">
+    <div class="brand">
+      <span class="live-pill"><i></i>مباشر</span>
+      <div><b>من <em>المكان</em> تبدأ الفكرة</b><small>اليوم العالمي لنظم المعلومات الجغرافية</small></div>
+    </div>
+    <button id="leaveBtn" class="btn ghost">مغادرة</button>
   </div>
   <div id="stage">
+    <div class="stage-idle"><i class="radar"></i><i class="radar r2"></i><svg viewBox="0 0 24 24"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" fill="currentColor"/><circle cx="12" cy="10" r="2.8" fill="#060b19"/></svg></div>
     <video id="mainVideo" autoplay playsinline muted hidden></video>
     <div id="stageName" hidden></div>
   </div>
   <div id="cards"></div>
-  <div id="hint">اضغط على أي مقدم لتسمعه وتشاهده بالحجم الكبير</div>
+  <div id="hint"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z" fill="currentColor"/></svg>اضغط على أي مقدم لتسمعه وتشاهده بالحجم الكبير</div>
   <div id="audioBox" hidden></div>
 </div>
 
+<script src="/theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.7/dist/livekit-client.umd.min.js"></script>
 <script>
 const { Room, RoomEvent, Track, VideoQuality } = LivekitClient;
@@ -89,7 +128,7 @@ buildCards();
 
 async function join() {
   $('err').textContent = '';
-  $('err').className = '';
+  $('err').className = 'err';
   leaving = false;
   $('joinBtn').disabled = true;
   try {
@@ -145,7 +184,7 @@ function wire(room) {
     .on(RoomEvent.Disconnected, () => {
       selected = null; speaking.clear(); resetMedia();
       $('app').hidden = true; $('join').hidden = false; $('joinBtn').disabled = false;
-      $('err').className = leaving ? 'info' : '';
+      $('err').className = leaving ? 'err info' : 'err';
       $('err').textContent = leaving ? 'غادرت البث. يمكنك العودة متى شئت.' : 'انقطع الاتصال. حاول الدخول من جديد.';
     });
 }
