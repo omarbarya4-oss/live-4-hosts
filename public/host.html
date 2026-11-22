@@ -62,8 +62,9 @@ const { Room, RoomEvent, Track, VideoPresets, AudioPresets } = LivekitClient;
 const $ = (id) => document.getElementById(id);
 let room = null;
 let facing = 'user';   // user = الأمامية، environment = الخلفية
-// إعدادات التقاط الكاميرا: 1080p بـ 30 إطارًا (إن لم تدعمها الكاميرا يأخذ المتصفح أقرب دقة)
-const camOptions = () => ({ facingMode: facing, resolution: VideoPresets.h1080.resolution });
+// التقاط 720p بـ 30 إطارًا: أوضح وأثبت على الجوال من 1080p مع إنترنت الجوال
+const CAM_RES = VideoPresets.h720.resolution;
+const camOptions = () => ({ facingMode: facing, resolution: CAM_RES });
 
 $('joinBtn').onclick = join;
 
@@ -87,11 +88,15 @@ async function join() {
     room = new Room({
       adaptiveStream: true,
       dynacast: true,
-      videoCaptureDefaults: { resolution: VideoPresets.h1080.resolution },
+      videoCaptureDefaults: { resolution: CAM_RES },
       publishDefaults: {
-        // الطبقة العليا 1080p بمعدل حتى 3 ميغابت/ث، وطبقات أقل للمشاهدين بإنترنت ضعيف
-        videoEncoding: VideoPresets.h1080.encoding,
-        videoSimulcastLayers: [VideoPresets.h360, VideoPresets.h720],
+        // H.264 يستخدم ترميز الجوال المدمج: صورة أوضح بجهد أقل على المعالج
+        videoCodec: 'h264',
+        // الطبقة العليا 720p بمعدل حتى 2.5 ميغابت/ث، وطبقة 360p احتياطية فقط
+        videoEncoding: { maxBitrate: 2_500_000, maxFramerate: 30 },
+        videoSimulcastLayers: [VideoPresets.h360],
+        // عند ضعف الشبكة: خفّض عدد الإطارات وحافظ على وضوح الصورة
+        degradationPreference: 'maintain-resolution',
         // صوت أنقى من الإعداد الافتراضي
         audioPreset: AudioPresets.musicHighQuality,
         dtx: false,
@@ -158,7 +163,7 @@ $('flipBtn').onclick = async () => {
   const next = facing === 'user' ? 'environment' : 'user';
   $('flipBtn').disabled = true;
   try {
-    await pub.track.restartTrack({ facingMode: next, resolution: VideoPresets.h1080.resolution });
+    await pub.track.restartTrack({ facingMode: next, resolution: CAM_RES });
     facing = next;
     $('preview').classList.toggle('back', facing === 'environment');
   } catch (e) {
