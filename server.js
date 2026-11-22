@@ -17,12 +17,18 @@ if (!LIVEKIT_URL || !LIVEKIT_API_KEY || !LIVEKIT_API_SECRET) {
   process.exit(1);
 }
 
-// يقبل الفاصلة الإنجليزية , أو العربية ، ويتجاهل المسافات
-const hostKeys = HOST_KEYS.split(/[,،]/).map((s) => s.trim()).filter(Boolean);
-if (hostKeys.length !== 4 || hostKeys.some((k) => !k)) {
-  console.error(`HOST_KEYS يجب أن يحتوي على 4 مفاتيح مفصولة بفاصلة (الموجود الآن: ${hostKeys.length})`);
+// يقبل أي فاصل: , ، ; ؛ | مسافة أو سطر جديد
+// مفتاح واحد = نفس المفتاح لكل المقدمين الأربعة، أو 4 مفاتيح = مفتاح لكل مقدم
+let hostKeys = HOST_KEYS.split(/[\s,،;؛|]+/).map((s) => s.trim()).filter(Boolean);
+if (hostKeys.length === 1) hostKeys = Array(4).fill(hostKeys[0]);
+if (hostKeys.length !== 4) {
+  console.error(`HOST_KEYS يجب أن يحتوي على مفتاح واحد أو 4 مفاتيح (الموجود الآن: ${hostKeys.length})`);
   process.exit(1);
 }
+if (hostKeys.includes('PASTE_HERE')) {
+  console.warn('تنبيه: HOST_KEYS ما زال PASTE_HERE، غيّره من إعدادات Render');
+}
+console.log(`مفاتيح المقدمين: ${new Set(hostKeys).size === 1 ? 'مفتاح واحد مشترك' : '4 مفاتيح منفصلة'}`);
 
 const app = express();
 app.use(express.json());
@@ -41,6 +47,7 @@ app.post('/api/token', async (req, res) => {
     if (role === 'host') {
       const n = Number(slot);
       if (![1, 2, 3, 4].includes(n)) return res.status(400).json({ error: 'رقم المقدم غير صحيح' });
+      if (hostKeys[n - 1] === 'PASTE_HERE') return res.status(503).json({ error: 'لم يُضبط مفتاح المقدمين بعد في إعدادات الخادم' });
       if (key !== hostKeys[n - 1]) return res.status(401).json({ error: 'المفتاح السري غير صحيح' });
       identity = `host-${n}`;
       canPublish = true;
