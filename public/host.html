@@ -15,9 +15,10 @@
   button.primary { background:var(--accent)!important; color:#fff!important; border:none!important; cursor:pointer; font-weight:600; }
   #preview { aspect-ratio:16/9; background:#000; border-radius:16px; overflow:hidden; border:1px solid var(--line); position:relative; }
   #preview video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  #preview.back video { transform:none; } /* الكاميرا الخلفية بدون انعكاس */
   #badge { position:absolute; top:12px; right:12px; background:var(--accent); padding:4px 12px; border-radius:20px; font-size:13px; font-weight:700; }
-  .controls { display:flex; gap:10px; margin-top:12px; }
-  .controls button { flex:1; padding:12px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text); font-size:15px; cursor:pointer; }
+  .controls { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+  .controls button { flex:1 1 120px; padding:12px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text); font-size:15px; cursor:pointer; }
   .controls button.off { background:#3a1f24; border-color:var(--accent); }
   .controls button.stop { background:var(--accent); border:none; }
   #viewers { margin-top:12px; color:var(--muted); font-size:14px; }
@@ -47,6 +48,7 @@
   <div class="controls">
     <button id="micBtn">🎙️ الميكروفون</button>
     <button id="camBtn">📷 الكاميرا</button>
+    <button id="flipBtn" hidden>🔄 تبديل الكاميرا</button>
     <button id="stopBtn" class="stop">إنهاء</button>
   </div>
   <div id="viewers"></div>
@@ -59,6 +61,7 @@
 const { Room, RoomEvent, Track } = LivekitClient;
 const $ = (id) => document.getElementById(id);
 let room = null;
+let facing = 'user';   // user = الأمامية، environment = الخلفية
 
 $('joinBtn').onclick = join;
 
@@ -94,7 +97,7 @@ async function join() {
     await room.startAudio();
 
     // تشغيل الكاميرا والميكروفون
-    await room.localParticipant.setCameraEnabled(true);
+    await room.localParticipant.setCameraEnabled(true, { facingMode: facing });
     await room.localParticipant.setMicrophoneEnabled(true);
 
     const camPub = room.localParticipant.getTrackPublication(Track.Source.Camera);
@@ -103,6 +106,10 @@ async function join() {
     $('join').hidden = true;
     $('app').hidden = false;
     updateViewers();
+
+    // إظهار زر التبديل فقط إن كان في الجهاز أكثر من كاميرا
+    const cams = await Room.getLocalDevices('videoinput').catch(() => []);
+    $('flipBtn').hidden = cams.length < 2;
   } catch (e) {
     $('err').textContent = e.message;
     $('joinBtn').disabled = false;
@@ -124,9 +131,27 @@ $('micBtn').onclick = async () => {
 
 $('camBtn').onclick = async () => {
   const on = room.localParticipant.isCameraEnabled;
-  await room.localParticipant.setCameraEnabled(!on);
+  await room.localParticipant.setCameraEnabled(!on, { facingMode: facing });
   $('camBtn').classList.toggle('off', on);
+  $('flipBtn').disabled = on;   // لا تبديل والكاميرا مغلقة
   $('camBtn').textContent = on ? '🚫 الكاميرا مغلقة' : '📷 الكاميرا';
+};
+
+$('flipBtn').onclick = async () => {
+  const pub = room.localParticipant.getTrackPublication(Track.Source.Camera);
+  if (!pub || !pub.track) return;
+  const next = facing === 'user' ? 'environment' : 'user';
+  $('flipBtn').disabled = true;
+  try {
+    await pub.track.restartTrack({ facingMode: next });
+    facing = next;
+    $('preview').classList.toggle('back', facing === 'environment');
+  } catch (e) {
+    console.error(e);
+    $('flipBtn').textContent = '⚠️ تعذر التبديل';
+    setTimeout(() => { $('flipBtn').textContent = '🔄 تبديل الكاميرا'; }, 2000);
+  }
+  $('flipBtn').disabled = false;
 };
 
 $('stopBtn').onclick = () => room.disconnect();
