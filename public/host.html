@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة المقدم</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --line:#2a2f3a; --text:#eef0f4; --muted:#8a92a3; --accent:#ff4d5e; --ok:#3ddc84; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,"Segoe UI",Tahoma,sans-serif; }
+  .wrap { max-width:720px; margin:0 auto; padding:16px; }
+  h1 { font-size:20px; margin:8px 0 16px; }
+  #join { max-width:380px; margin:10vh auto; background:var(--card); border:1px solid var(--line); padding:24px; border-radius:16px; }
+  #join input, #join select, #join button { width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); font-size:16px; margin-top:10px; background:#0f1115; color:var(--text); }
+  button.primary { background:var(--accent)!important; color:#fff!important; border:none!important; cursor:pointer; font-weight:600; }
+  #preview { aspect-ratio:16/9; background:#000; border-radius:16px; overflow:hidden; border:1px solid var(--line); position:relative; }
+  #preview video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+  #badge { position:absolute; top:12px; right:12px; background:var(--accent); padding:4px 12px; border-radius:20px; font-size:13px; font-weight:700; }
+  .controls { display:flex; gap:10px; margin-top:12px; }
+  .controls button { flex:1; padding:12px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text); font-size:15px; cursor:pointer; }
+  .controls button.off { background:#3a1f24; border-color:var(--accent); }
+  .controls button.stop { background:var(--accent); border:none; }
+  #viewers { margin-top:12px; color:var(--muted); font-size:14px; }
+  .hint { margin-top:10px; font-size:13px; color:var(--muted); }
+  #err { color:#ff8a94; margin-top:10px; font-size:14px; min-height:18px; }
+</style>
+</head>
+<body>
+
+<div id="join">
+  <h1>دخول المقدم</h1>
+  <select id="slot">
+    <option value="1">مقدم 1</option>
+    <option value="2">مقدم 2</option>
+    <option value="3">مقدم 3</option>
+    <option value="4">مقدم 4</option>
+  </select>
+  <input id="nameInput" placeholder="اسمك الظاهر للمشاهدين" maxlength="40">
+  <input id="keyInput" type="password" placeholder="المفتاح السري">
+  <button class="primary" id="joinBtn">ابدأ البث</button>
+  <div id="err"></div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <h1>🔴 أنت على الهواء</h1>
+  <div id="preview"><div id="badge">LIVE</div></div>
+  <div class="controls">
+    <button id="micBtn">🎙️ الميكروفون</button>
+    <button id="camBtn">📷 الكاميرا</button>
+    <button id="stopBtn" class="stop">إنهاء</button>
+  </div>
+  <div id="viewers"></div>
+  <div class="hint">استخدم سماعات أذن حتى لا يدخل صوت المقدمين الآخرين في ميكروفونك.</div>
+  <div id="audioBox" hidden></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.7/dist/livekit-client.umd.min.js"></script>
+<script>
+const { Room, RoomEvent, Track } = LivekitClient;
+const $ = (id) => document.getElementById(id);
+let room = null;
+
+$('joinBtn').onclick = join;
+
+async function join() {
+  $('err').textContent = '';
+  $('joinBtn').disabled = true;
+  try {
+    const r = await fetch('/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: 'host',
+        slot: Number($('slot').value),
+        name: $('nameInput').value,
+        key: $('keyInput').value,
+      }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'فشل الدخول');
+
+    room = new Room({ adaptiveStream: true, dynacast: true });
+
+    // المقدم يسمع بقية المقدمين تلقائيًا (الاشتراك التلقائي مفعّل)
+    room.on(RoomEvent.TrackSubscribed, (track) => {
+      if (track.kind === Track.Kind.Audio) $('audioBox').appendChild(track.attach());
+    });
+    room.on(RoomEvent.TrackUnsubscribed, (track) => track.detach().forEach((e) => e.remove()));
+    room.on(RoomEvent.ParticipantConnected, updateViewers);
+    room.on(RoomEvent.ParticipantDisconnected, updateViewers);
+    room.on(RoomEvent.Disconnected, () => location.reload());
+
+    await room.connect(data.url, data.token);
+    await room.startAudio();
+
+    // تشغيل الكاميرا والميكروفون
+    await room.localParticipant.setCameraEnabled(true);
+    await room.localParticipant.setMicrophoneEnabled(true);
+
+    const camPub = room.localParticipant.getTrackPublication(Track.Source.Camera);
+    if (camPub && camPub.track) $('preview').insertBefore(camPub.track.attach(), $('preview').firstChild);
+
+    $('join').hidden = true;
+    $('app').hidden = false;
+    updateViewers();
+  } catch (e) {
+    $('err').textContent = e.message;
+    $('joinBtn').disabled = false;
+    if (room) room.disconnect();
+  }
+}
+
+function updateViewers() {
+  const n = [...room.remoteParticipants.values()].filter((p) => p.identity.startsWith('viewer-')).length;
+  $('viewers').textContent = `المشاهدون المتصلون: ${n}`;
+}
+
+$('micBtn').onclick = async () => {
+  const on = room.localParticipant.isMicrophoneEnabled;
+  await room.localParticipant.setMicrophoneEnabled(!on);
+  $('micBtn').classList.toggle('off', on);
+  $('micBtn').textContent = on ? '🔇 الميكروفون مغلق' : '🎙️ الميكروفون';
+};
+
+$('camBtn').onclick = async () => {
+  const on = room.localParticipant.isCameraEnabled;
+  await room.localParticipant.setCameraEnabled(!on);
+  $('camBtn').classList.toggle('off', on);
+  $('camBtn').textContent = on ? '🚫 الكاميرا مغلقة' : '📷 الكاميرا';
+};
+
+$('stopBtn').onclick = () => room.disconnect();
+</script>
+</body>
+</html>
