@@ -48,11 +48,12 @@
   <div class="controls">
     <button id="micBtn">🎙️ الميكروفون</button>
     <button id="camBtn">📷 الكاميرا</button>
+    <button id="hearBtn" class="off">🎧 سماع المقدمين: مغلق</button>
     <button id="flipBtn" hidden>🔄 تبديل الكاميرا</button>
     <button id="stopBtn" class="stop">إنهاء</button>
   </div>
   <div id="viewers"></div>
-  <div class="hint">استخدم سماعات أذن حتى لا يدخل صوت المقدمين الآخرين في ميكروفونك.</div>
+  <div class="hint">صوت المقدمين الآخرين مغلق عندك حتى لا يدخل في ميكروفونك ويسمعه مشاهدوك. إن أردت سماعهم فشغّله مع سماعات أذن فقط.</div>
   <div id="audioBox" hidden></div>
 </div>
 
@@ -61,6 +62,7 @@
 const { Room, RoomEvent, Track, VideoPresets, AudioPresets } = LivekitClient;
 const $ = (id) => document.getElementById(id);
 let room = null;
+let hearHosts = false;   // سماع المقدمين الآخرين (مغلق افتراضيًا)
 let facing = 'user';   // user = الأمامية، environment = الخلفية
 // التقاط 720p بـ 30 إطارًا: أوضح وأثبت على الجوال من 1080p مع إنترنت الجوال
 const CAM_RES = VideoPresets.h720.resolution;
@@ -104,16 +106,18 @@ async function join() {
       },
     });
 
-    // المقدم يسمع بقية المقدمين تلقائيًا (الاشتراك التلقائي مفعّل)
+    // لا نستقبل شيئًا من المقدمين الآخرين إلا إذا شغّل المقدم زر السماع
     room.on(RoomEvent.TrackSubscribed, (track) => {
-      if (track.kind === Track.Kind.Audio) $('audioBox').appendChild(track.attach());
+      if (track.kind === Track.Kind.Audio && hearHosts) $('audioBox').appendChild(track.attach());
     });
+    room.on(RoomEvent.TrackPublished, applyHearing);
+    room.on(RoomEvent.ParticipantConnected, applyHearing);
     room.on(RoomEvent.TrackUnsubscribed, (track) => track.detach().forEach((e) => e.remove()));
     room.on(RoomEvent.ParticipantConnected, updateViewers);
     room.on(RoomEvent.ParticipantDisconnected, updateViewers);
     room.on(RoomEvent.Disconnected, () => location.reload());
 
-    await room.connect(data.url, data.token);
+    await room.connect(data.url, data.token, { autoSubscribe: false });
     await room.startAudio();
 
     // تشغيل الكاميرا والميكروفون
@@ -172,6 +176,26 @@ $('flipBtn').onclick = async () => {
     setTimeout(() => { $('flipBtn').textContent = '🔄 تبديل الكاميرا'; }, 2000);
   }
   $('flipBtn').disabled = false;
+};
+
+// الاشتراك في صوت المقدمين الآخرين فقط عند تشغيل زر السماع
+function applyHearing() {
+  if (!room) return;
+  room.remoteParticipants.forEach((p) => {
+    if (!p.identity.startsWith('host-')) return;
+    p.trackPublications.forEach((pub) => {
+      if (pub.kind !== Track.Kind.Audio) return;
+      if (!hearHosts && pub.track) pub.track.detach().forEach((el) => el.remove());
+      if (pub.isSubscribed !== hearHosts) pub.setSubscribed(hearHosts);
+    });
+  });
+}
+
+$('hearBtn').onclick = () => {
+  hearHosts = !hearHosts;
+  $('hearBtn').classList.toggle('off', !hearHosts);
+  $('hearBtn').textContent = hearHosts ? '🎧 سماع المقدمين: يعمل' : '🎧 سماع المقدمين: مغلق';
+  applyHearing();
 };
 
 $('stopBtn').onclick = () => room.disconnect();
