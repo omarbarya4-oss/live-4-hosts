@@ -17,9 +17,10 @@ if (!LIVEKIT_URL || !LIVEKIT_API_KEY || !LIVEKIT_API_SECRET) {
   process.exit(1);
 }
 
-const hostKeys = HOST_KEYS.split(',').map((s) => s.trim());
+// يقبل الفاصلة الإنجليزية , أو العربية ، ويتجاهل المسافات
+const hostKeys = HOST_KEYS.split(/[,،]/).map((s) => s.trim()).filter(Boolean);
 if (hostKeys.length !== 4 || hostKeys.some((k) => !k)) {
-  console.error('HOST_KEYS يجب أن يحتوي على 4 مفاتيح مفصولة بفاصلة');
+  console.error(`HOST_KEYS يجب أن يحتوي على 4 مفاتيح مفصولة بفاصلة (الموجود الآن: ${hostKeys.length})`);
   process.exit(1);
 }
 
