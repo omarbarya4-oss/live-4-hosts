@@ -111,39 +111,9 @@
   </svg>
 </div>
 
-<!-- التعليمات أولًا -->
-<section class="section howto">
-  <h3 class="sec-title"><span class="num">1</span>طريقة الدخول والتنقل بين الغرف</h3>
-  <p class="sec-sub">لكل غرفة رابط خاص بها. اضغط الغرفة التي تريدها فتسمع مقدمها فقط، وللانتقال تغادر وتختار غرفة أخرى من هذه الصفحة. اختر جهازك:</p>
-  <div class="tabs" role="tablist">
-    <button class="tab" data-pane="phone" role="tab">📱 الجوال</button>
-    <button class="tab" data-pane="desk" role="tab">💻 الكمبيوتر</button>
-  </div>
-
-  <div class="pane" id="pane-phone">
-    <div class="alert">⚠️ <span>على الجوال <b>يجب تثبيت تطبيق Microsoft Teams</b>، لأن متصفح الجوال لا يفتح الاجتماعات.</span></div>
-    <ol class="steps">
-      <li class="step"><span class="n">1</span><div><h4>ثبّت تطبيق Teams</h4><p>مجانًا من المتجر، ولا تحتاج إنشاء حساب.</p>
-        <div class="stores"><a class="store" href="https://apps.apple.com/app/microsoft-teams/id1113153706" target="_blank" rel="noopener"> App Store</a><a class="store" href="https://play.google.com/store/apps/details?id=com.microsoft.teams" target="_blank" rel="noopener">▶ Google Play</a></div></div></li>
-      <li class="step"><span class="n">2</span><div><h4>اضغط الغرفة التي تريدها</h4><p>من البطاقات في الأسفل اضغط <span class="kbd">ادخل الغرفة</span>، فيفتح تطبيق Teams تلقائيًا.</p></div></li>
-      <li class="step"><span class="n">3</span><div><h4>ادخل كضيف</h4><p>اختر <span class="kbd">الانضمام كضيف</span>، اكتب اسمك، ثم <span class="kbd">انضمام الآن</span>. الآن تسمع مقدم هذه الغرفة فقط.</p></div></li>
-      <li class="step"><span class="n">4</span><div><h4>للانتقال إلى غرفة أخرى</h4><p>اضغط زر <span class="kbd">✆ مغادرة</span> الأحمر، ثم ارجع إلى هذه الصفحة واضغط غرفة ثانية.</p></div></li>
-    </ol>
-  </div>
-
-  <div class="pane" id="pane-desk">
-    <ol class="steps">
-      <li class="step"><span class="n">1</span><div><h4>اضغط الغرفة التي تريدها</h4><p>من البطاقات في الأسفل اضغط <span class="kbd">ادخل الغرفة</span>، فتُفتح صفحة الاجتماع في تبويب جديد.</p></div></li>
-      <li class="step"><span class="n">2</span><div><h4>اختر طريقة الدخول</h4><p>اضغط <span class="kbd">المتابعة في هذا المتصفح</span> بدون تثبيت أي شيء، أو افتحه في تطبيق Teams إن كان مثبتًا.</p></div></li>
-      <li class="step"><span class="n">3</span><div><h4>اكتب اسمك وانضم</h4><p>أغلق الميكروفون والكاميرا ثم اضغط <span class="kbd">انضمام الآن</span>. تسمع مقدم هذه الغرفة فقط.</p></div></li>
-      <li class="step"><span class="n">4</span><div><h4>للانتقال إلى غرفة أخرى</h4><p>اضغط <span class="kbd">مغادرة</span>، ثم ارجع إلى تبويب هذه الصفحة واضغط غرفة ثانية.</p></div></li>
-    </ol>
-  </div>
-</section>
-
 <!-- الغرف -->
 <section class="section rooms-sec">
-  <h3 class="sec-title"><span class="num">2</span>اختر الغرفة وادخل</h3>
+  <h3 class="sec-title"><span class="num">1</span>اختر الغرفة وادخل</h3>
   <p class="sec-sub">الغرف الأربع تعمل في نفس الوقت من 8 صباحًا إلى 12 ظهرًا.</p>
   <div class="rooms">
     <a class="room glass reveal d1" href="https://teams.microsoft.com/meet/348069930291225?p=ohxbqajVybeliA3thB" target="_blank" rel="noopener">
@@ -181,14 +151,5 @@
 </section>
 
 <script src="/theme.js"></script>
-<script>
-function openPane(name) {
-  document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.pane === name));
-  document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.id === 'pane-' + name));
-}
-document.querySelectorAll('.tab').forEach((t) => t.onclick = () => openPane(t.dataset.pane));
-const isPhone = matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
-openPane(isPhone ? 'phone' : 'desk');
-</script>
 </body>
 </html>
