@@ -19,18 +19,7 @@
   .sec-sub { color: #c3cce0; margin: 0 0 18px; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
   .sec-title { text-shadow: 0 2px 12px rgba(0,0,0,.8); }
 
-  /* بطاقة الدخول */
-  .join-teams { margin: 8vh auto 0; padding: 24px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; align-items: center; }
-  .join-teams .btn.primary { margin-top: 16px; text-decoration: none; }
-  .creds { display: grid; gap: 10px; }
-  .cred { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(5,10,24,.65); border: 1px solid var(--line); }
-  .cred small { display: block; color: var(--muted); font-size: 12px; }
-  .cred b { font-size: clamp(15px, 4vw, 18px); letter-spacing: .5px; direction: ltr; display: inline-block; white-space: nowrap; }
-  .copy { padding: 8px 12px; font-size: 13px; }
-  .copy.done { border-color: var(--teal); color: var(--teal); }
-  .note { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 8px 0 0; }
 
-  /* العرض التوضيحي */
   .demo-wrap { margin-top: 8vh; display: grid; grid-template-columns: 1fr 1.25fr; gap: 22px; align-items: start; }
   .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .step { display: flex; gap: 14px; padding: 14px 16px; border-radius: 16px; background: var(--glass); border: 1px solid var(--line); transition: border-color .35s, box-shadow .35s, transform .35s; cursor: pointer; }
@@ -41,55 +30,12 @@
   .step.active .n { background: linear-gradient(135deg, #ffc27a, #ff8a1e); color: #1b0f02; border-color: transparent; }
   .kbd { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 6px; background: rgba(255,154,46,.14); border: 1px solid rgba(255,154,46,.45); color: var(--accent-2); font-weight: 700; font-size: 13px; white-space: nowrap; }
 
-  /* محاكاة نافذة Teams */
-  .mock { position: relative; border-radius: 18px; overflow: hidden; background: #1b1a2e; border: 1px solid rgba(255,154,46,.35); box-shadow: 0 0 60px rgba(255,154,46,.14), 0 30px 80px rgba(0,0,0,.5); aspect-ratio: 16/11; user-select: none; }
-  .mock-bar { position: absolute; top: 0; inset-inline: 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #24233a; border-bottom: 1px solid rgba(255,255,255,.06); direction: ltr; }
-  .mock-title { color: #cfd3e6; font-size: 12px; font-family: var(--body); direction: rtl; }
-  .tools { display: flex; gap: 6px; }
-  .tool { width: 44px; height: 36px; border-radius: 8px; display: grid; place-items: center; color: #d9dbea; font-size: 10px; line-height: 1.1; text-align: center; transition: background .25s, box-shadow .25s; }
-  .tool svg { width: 16px; height: 16px; display: block; margin: 0 auto 2px; }
-  .tool.rooms.on { background: rgba(255,154,46,.25); box-shadow: 0 0 0 1.5px var(--accent), 0 0 16px var(--accent-glow); color: #fff; }
-  .tool.leave { width: 54px; background: #c4314b; color: #fff; }
-  .mock-stage { position: absolute; top: 48px; bottom: 0; left: 0; right: 0; display: grid; place-items: center; padding: 16px; transition: right .45s cubic-bezier(.2,.7,.2,1); }
-  .mock.panel-open .mock-stage { right: 40%; }
-  .room-view { width: 100%; height: 100%; border-radius: 12px; background: radial-gradient(circle at 50% 30%, #34315a, #1f1d35 70%); display: grid; place-items: center; text-align: center; position: relative; overflow: hidden; }
-  .room-view .who { width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 10px; display: grid; place-items: center; font: 800 28px var(--display); color: #1b0f02; background: linear-gradient(135deg, #ffc27a, #ff8a1e); position: relative; }
-  .room-view .who::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 3px solid var(--teal); opacity: 0; }
-  .room-view.speaking .who::after { animation: talk 1s ease-in-out infinite; }
-  @keyframes talk { 0%,100% { opacity: .2; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
-  .room-view .label { color: #fff; font: 700 17px var(--display); }
-  .room-view .sub { color: #a7abc6; font-size: 12px; margin-top: 4px; }
-  .room-view .badge { position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 999px; font-size: 11px; background: rgba(70,227,183,.15); border: 1px solid rgba(70,227,183,.5); color: #bdf6e5; opacity: 0; transform: translateY(-6px); transition: .35s; }
-  .room-view.in-room .badge { opacity: 1; transform: none; }
-  .swap { animation: swap .5s ease; }
-  @keyframes swap { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
-
-  .panel { position: absolute; top: 48px; bottom: 0; right: 0; width: 40%; background: #24233a; border-left: 1px solid rgba(255,255,255,.07); padding: 12px; transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.7,.2,1); display: flex; flex-direction: column; gap: 8px; }
-  .mock.panel-open .panel { transform: none; }
-  .panel h5 { margin: 0 0 4px; color: #fff; font: 700 14px var(--display); }
-  .room-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 9px; border-radius: 9px; background: rgba(255,255,255,.04); border: 1px solid transparent; transition: border-color .25s, background .25s; }
-  .room-row span { color: #e5e6f2; font-size: 12px; }
-  .room-row .j { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #fff; background: #5b5fc7; }
-  .room-row.current { border-color: rgba(70,227,183,.5); background: rgba(70,227,183,.08); }
-  .room-row.current .j { background: transparent; color: var(--teal); }
-  .room-row.target { border-color: var(--accent); background: rgba(255,154,46,.1); }
-
-  .cursor { position: absolute; z-index: 5; width: 22px; height: 22px; left: 50%; top: 60%; transition: left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1); pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
-  .cursor svg { width: 100%; height: 100%; }
-  .ripple { position: absolute; z-index: 4; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; animation: ripple .6s ease-out forwards; }
-  @keyframes ripple { from { transform: scale(.3); opacity: 1; } to { transform: scale(3); opacity: 0; } }
-  .caption { margin-top: 12px; text-align: center; color: var(--accent-2); font: 700 16px var(--display); min-height: 26px; transition: opacity .3s; }
-  .demo-ctrl { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
-  .demo-ctrl .btn { padding: 8px 14px; font-size: 13px; }
-
   /* نصائح */
   .tips { margin: 8vh auto 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .tip { padding: 18px 16px; text-align: center; }
   .tip .ic { width: 46px; height: 46px; margin: 0 auto 10px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background: rgba(255,154,46,.12); border: 1px solid rgba(255,154,46,.4); }
   .tip h4 { margin: 0 0 6px; font-family: var(--display); font-size: 17px; }
   .tip p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
-  .back { text-align: center; margin: 0 0 50px; color: var(--muted); font-size: 14px; }
-  .back a { color: var(--accent-2); }
 
   /* تبويبات الجهاز */
   .tabs { display: inline-flex; gap: 6px; padding: 5px; border-radius: 14px; background: rgba(5,10,24,.7); border: 1px solid var(--line); margin: 4px 0 18px; }
@@ -102,37 +48,37 @@
   .stores { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
   .store { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 9px; background: #000; border: 1px solid rgba(255,255,255,.25); color: #fff; font-size: 12px; text-decoration: none; }
 
-  /* محاكاة الجوال */
-  .phone { position: relative; width: min(290px, 78vw); aspect-ratio: 9/18.5; margin: 0 auto; border-radius: 38px; border: 9px solid #0b0b16; background: #1b1a2e; box-shadow: 0 0 0 1px rgba(255,154,46,.35), 0 0 60px rgba(255,154,46,.16), 0 30px 80px rgba(0,0,0,.55); overflow: hidden; user-select: none; }
-  .phone .notch { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 90px; height: 20px; border-radius: 12px; background: #0b0b16; z-index: 6; }
-  .p-screen { position: absolute; inset: 0; padding: 38px 12px 12px; display: flex; flex-direction: column; transition: opacity .35s; }
-  .p-screen.hide { opacity: 0; pointer-events: none; }
-  .p-join h6 { margin: 18px 0 14px; color: #fff; font: 700 15px var(--display); text-align: center; }
-  .p-field { padding: 11px 12px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #cfd2e8; font-size: 13px; margin-bottom: 10px; }
-  .p-toggles { display: flex; justify-content: center; gap: 10px; margin: 6px 0 16px; }
-  .p-toggles span { padding: 7px 12px; border-radius: 999px; font-size: 11px; color: #ffc9cf; background: rgba(196,49,75,.18); border: 1px solid rgba(196,49,75,.5); }
-  .p-btn { margin-top: auto; padding: 12px; border-radius: 10px; text-align: center; color: #fff; font: 700 14px var(--display); background: #5b5fc7; }
-  .p-call .room-view { flex: 1; }
-  .p-bar { display: flex; justify-content: space-around; align-items: center; padding: 10px 4px 4px; direction: ltr; }
-  .p-ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.1); color: #fff; font-size: 16px; transition: box-shadow .25s, background .25s; }
-  .p-ic.leave { background: #c4314b; }
-  .p-ic.on { background: rgba(255,154,46,.3); box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--accent-glow); }
-  .sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; padding: 14px 12px 16px; border-radius: 18px 18px 0 0; background: #2a2945; box-shadow: 0 -10px 30px rgba(0,0,0,.45); transform: translateY(105%); transition: transform .4s cubic-bezier(.2,.7,.2,1); }
-  .sheet.open { transform: none; }
-  .sheet .grab { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.3); margin: 0 auto 10px; }
-  .sheet h6 { margin: 0 0 8px; color: #fff; font: 700 13px var(--display); }
-  .opt { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; color: #e6e7f4; font-size: 13px; border: 1px solid transparent; transition: background .25s, border-color .25s; }
-  .opt.target { background: rgba(255,154,46,.14); border-color: var(--accent); }
-  .sheet .room-row { margin-bottom: 6px; }
-  .finger { position: absolute; z-index: 7; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(255,255,255,.35); border: 2px solid rgba(255,255,255,.9); box-shadow: 0 0 14px rgba(255,255,255,.4); left: 50%; top: 55%; transition: left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1), transform .15s; pointer-events: none; }
-  .finger.press { transform: scale(.75); }
+  .note { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 8px 0 0; }
+  .howto { margin-top: 6vh; }
+  .pane { display: none; } .pane.on { display: block; animation: reveal .5s cubic-bezier(.2,.7,.2,1) both; }
+  .steps { max-width: 760px; }
+  .step { cursor: default; }
+  .step:hover { border-color: rgba(255,154,46,.55); }
+
+  /* بطاقات الغرف */
+  .rooms-sec { margin-top: 8vh; }
+  .rooms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .room { position: relative; display: flex; align-items: center; gap: 16px; padding: 20px; border-radius: 20px; text-decoration: none; color: var(--text); overflow: hidden; transition: transform .3s, border-color .3s, box-shadow .3s; }
+  .room::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 90% 0%, rgba(255,154,46,.22), transparent 60%); opacity: .6; transition: opacity .3s; pointer-events: none; }
+  .room:hover, .room:focus-visible { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 18px 50px rgba(255,138,30,.25); }
+  .room:hover::before { opacity: 1; }
+  .room .ic { flex-shrink: 0; width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; font-size: 30px; background: rgba(255,154,46,.12); border: 1px solid rgba(255,154,46,.45); position: relative; }
+  .room .ic b { position: absolute; top: -8px; right: -8px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 13px var(--display); color: #1b0f02; background: linear-gradient(135deg, #ffc27a, #ff8a1e); box-shadow: 0 0 14px var(--accent-glow); }
+  .room .txt { flex: 1; min-width: 0; position: relative; }
+  .room small { display: block; color: var(--muted); font-size: 13px; margin-bottom: 2px; }
+  .room h4 { margin: 0; font-family: var(--display); font-size: clamp(18px, 2.4vw, 22px); line-height: 1.35; }
+  .room .go { flex-shrink: 0; position: relative; padding: 10px 16px; border-radius: 12px; font: 700 14px var(--display); color: #1b0f02; background: linear-gradient(135deg, #ffc27a, #ff8a1e); white-space: nowrap; box-shadow: 0 6px 20px rgba(255,138,30,.3); }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ff5a5a; margin-inline-end: 6px; box-shadow: 0 0 0 0 rgba(255,90,90,.6); animation: pulse 1.6s infinite; vertical-align: middle; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,90,90,.6); } 100% { box-shadow: 0 0 0 10px rgba(255,90,90,0); } }
+  .switch-note { margin-top: 14px; padding: 14px 16px; border-radius: 14px; display: flex; gap: 10px; align-items: flex-start; background: rgba(70,227,183,.08); border: 1px solid rgba(70,227,183,.4); color: #d4f8ee; font-size: 14px; line-height: 1.8; }
 
   @media (max-width: 860px) {
-    .join-teams, .demo-wrap { grid-template-columns: 1fr; }
+    .rooms { grid-template-columns: 1fr; }
     .tips { grid-template-columns: 1fr 1fr; }
-    .mock { aspect-ratio: 4/3.4; }
-    .tool { width: 36px; font-size: 0; } .tool svg { margin: 0 auto; }
-    .tool.leave { width: 40px; }
+  }
+  @media (max-width: 420px) {
+    .room { flex-wrap: wrap; padding: 16px; }
+    .room .go { width: 100%; text-align: center; }
   }
 </style>
 </head>
@@ -167,265 +113,78 @@
 
 <!-- التعليمات أولًا -->
 <section class="section howto">
-  <h3 class="sec-title"><span class="num">1</span>كيف تتنقل بين غرف المقدمين؟</h3>
-  <p class="sec-sub">أربعة مقدمين يتحدثون في نفس الوقت، كل واحد في غرفة. تختار الغرفة التي تريد سماعها وتنتقل بينها متى شئت. اختر جهازك:</p>
+  <h3 class="sec-title"><span class="num">1</span>طريقة الدخول والتنقل بين الغرف</h3>
+  <p class="sec-sub">لكل غرفة رابط خاص بها. اضغط الغرفة التي تريدها فتسمع مقدمها فقط، وللانتقال تغادر وتختار غرفة أخرى من هذه الصفحة. اختر جهازك:</p>
   <div class="tabs" role="tablist">
     <button class="tab" data-pane="phone" role="tab">📱 الجوال</button>
     <button class="tab" data-pane="desk" role="tab">💻 الكمبيوتر</button>
   </div>
 
-  <!-- الجوال -->
-  <div class="pane demo-wrap first" id="pane-phone">
-    <div>
-      <div class="alert">⚠️ <span>على الجوال <b>يجب استخدام تطبيق Microsoft Teams</b>، لأن المتصفح في الجوال لا يدعم الاجتماعات ولا الغرف.</span></div>
-      <ol class="steps" id="psteps">
-        <li class="step" data-i="0"><span class="n">1</span><div><h4>ثبّت تطبيق Teams</h4><p>حمّله مجانًا من المتجر. لا تحتاج إنشاء حساب.</p>
-          <div class="stores"><a class="store" href="https://apps.apple.com/app/microsoft-teams/id1113153706" target="_blank" rel="noopener"> App Store</a><a class="store" href="https://play.google.com/store/apps/details?id=com.microsoft.teams" target="_blank" rel="noopener">▶ Google Play</a></div></div></li>
-        <li class="step" data-i="1"><span class="n">2</span><div><h4>ادخل كضيف</h4><p>اضغط زر الانضمام في الأسفل، ثم <span class="kbd">الانضمام كضيف</span>، اكتب اسمك، وأغلق الميكروفون والكاميرا، ثم <span class="kbd">انضمام الآن</span>.</p></div></li>
-        <li class="step" data-i="2"><span class="n">3</span><div><h4>اضغط «المزيد ⋯»</h4><p>في <b>الشريط السفلي</b> للمكالمة اضغط زر النقاط الثلاث <span class="kbd">⋯ المزيد</span>.</p></div></li>
-        <li class="step" data-i="3"><span class="n">4</span><div><h4>اختر «الغرف» ثم غرفة المقدم</h4><p>من القائمة اضغط <span class="kbd">الغرف · Rooms</span>، ثم <span class="kbd">انضمام</span> بجانب غرفة المقدم الذي تريد سماعه.</p></div></li>
-        <li class="step" data-i="4"><span class="n">5</span><div><h4>للانتقال لمقدم آخر</h4><p>كرّر: <span class="kbd">⋯ المزيد</span> ← <span class="kbd">الغرف</span> ← اختر غرفة ثانية.</p></div></li>
-      </ol>
-    </div>
-    <div>
-      <div class="phone" id="phone">
-        <div class="notch"></div>
-        <div class="p-screen p-join" id="pJoin">
-          <h6>خطة احتياطية: البث المباشر</h6>
-          <div class="p-field">اسمك: أحمد</div>
-          <div class="p-toggles"><span>🎙️ مغلق</span><span>📷 مغلقة</span></div>
-          <div class="p-btn" id="pJoinBtn">انضمام الآن</div>
-        </div>
-        <div class="p-screen p-call hide" id="pCall">
-          <div class="room-view" id="pView">
-            <span class="badge">● أنت داخل الغرفة</span>
-            <div><div class="who" id="pWho">◎</div><div class="label" id="pLabel">الاجتماع الرئيسي</div><div class="sub" id="pSub">اختر غرفة لتسمع مقدمها</div></div>
-          </div>
-          <div class="p-bar">
-            <div class="p-ic leave">✆</div><div class="p-ic">🎙️</div><div class="p-ic">📷</div><div class="p-ic" id="pMore">⋯</div>
-          </div>
-        </div>
-        <div class="sheet" id="pMenu"><div class="grab"></div>
-          <div class="opt">✋ رفع اليد</div><div class="opt">💬 الدردشة</div><div class="opt" id="pRoomsOpt">▦ الغرف · Rooms</div><div class="opt">⚙️ الإعدادات</div>
-        </div>
-        <div class="sheet" id="pRooms"><div class="grab"></div><h6>الغرف</h6>
-          <div class="room-row" data-r="1"><span>غرفة المقدم 1</span><b class="j">انضمام</b></div>
-          <div class="room-row" data-r="2"><span>غرفة المقدم 2</span><b class="j">انضمام</b></div>
-          <div class="room-row" data-r="3"><span>غرفة المقدم 3</span><b class="j">انضمام</b></div>
-          <div class="room-row" data-r="4"><span>غرفة المقدم 4</span><b class="j">انضمام</b></div>
-        </div>
-        <div class="finger" id="finger"></div>
-      </div>
-      <div class="caption" id="pCaption"></div>
-      <div class="demo-ctrl"><button class="btn ghost" id="pReplay">↺ إعادة العرض</button></div>
-    </div>
+  <div class="pane" id="pane-phone">
+    <div class="alert">⚠️ <span>على الجوال <b>يجب تثبيت تطبيق Microsoft Teams</b>، لأن متصفح الجوال لا يفتح الاجتماعات.</span></div>
+    <ol class="steps">
+      <li class="step"><span class="n">1</span><div><h4>ثبّت تطبيق Teams</h4><p>مجانًا من المتجر، ولا تحتاج إنشاء حساب.</p>
+        <div class="stores"><a class="store" href="https://apps.apple.com/app/microsoft-teams/id1113153706" target="_blank" rel="noopener"> App Store</a><a class="store" href="https://play.google.com/store/apps/details?id=com.microsoft.teams" target="_blank" rel="noopener">▶ Google Play</a></div></div></li>
+      <li class="step"><span class="n">2</span><div><h4>اضغط الغرفة التي تريدها</h4><p>من البطاقات في الأسفل اضغط <span class="kbd">ادخل الغرفة</span>، فيفتح تطبيق Teams تلقائيًا.</p></div></li>
+      <li class="step"><span class="n">3</span><div><h4>ادخل كضيف</h4><p>اختر <span class="kbd">الانضمام كضيف</span>، اكتب اسمك، ثم <span class="kbd">انضمام الآن</span>. الآن تسمع مقدم هذه الغرفة فقط.</p></div></li>
+      <li class="step"><span class="n">4</span><div><h4>للانتقال إلى غرفة أخرى</h4><p>اضغط زر <span class="kbd">✆ مغادرة</span> الأحمر، ثم ارجع إلى هذه الصفحة واضغط غرفة ثانية.</p></div></li>
+    </ol>
   </div>
 
-  <!-- الكمبيوتر -->
-  <div class="pane demo-wrap first" id="pane-desk">
-    <div>
-      <ol class="steps" id="steps">
-        <li class="step" data-i="0"><span class="n">1</span><div><h4>اضغط زر الغرف</h4><p>بعد دخول الاجتماع، اضغط <span class="kbd">Rooms · الغرف</span> في الشريط العلوي.</p></div></li>
-        <li class="step" data-i="1"><span class="n">2</span><div><h4>اختر غرفة المقدم</h4><p>تظهر قائمة الغرف الأربع. اضغط <span class="kbd">Join · انضمام</span> بجانب الغرفة التي تريدها.</p></div></li>
-        <li class="step" data-i="2"><span class="n">3</span><div><h4>استمع للمقدم</h4><p>أنت الآن داخل الغرفة، ولا تسمع إلا مقدمها. لا تحتاج تشغيل الميكروفون أو الكاميرا.</p></div></li>
-        <li class="step" data-i="3"><span class="n">4</span><div><h4>انتقل لمقدم آخر</h4><p>اضغط <span class="kbd">Rooms</span> مرة أخرى واختر غرفة ثانية، أو ارجع للاجتماع الرئيسي متى أردت.</p></div></li>
-      </ol>
-    </div>
-    <div>
-      <div class="mock" id="mock">
-        <div class="mock-bar">
-          <div class="tools">
-            <div class="tool leave"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 15c5-5 13-5 18 0l-2.5 2.5-3-2V12c-2-.7-5-.7-7 0v3.5l-3 2Z"/></svg>مغادرة</div>
-          </div>
-          <div class="mock-title">خطة احتياطية: البث المباشر</div>
-          <div class="tools">
-            <div class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4Z"/></svg>دردشة</div>
-            <div class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-4 3.4-6 6.5-6s5.7 2 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .6 3.3 2.6 3.6 6"/></svg>الأشخاص</div>
-            <div class="tool rooms" id="roomsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>الغرف</div>
-            <div class="tool"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>المزيد</div>
-          </div>
-        </div>
-        <div class="mock-stage">
-          <div class="room-view" id="roomView">
-            <span class="badge">● أنت داخل الغرفة</span>
-            <div><div class="who" id="who">◎</div><div class="label" id="roomLabel">الاجتماع الرئيسي</div><div class="sub" id="roomSub">في انتظار اختيار غرفة…</div></div>
-          </div>
-        </div>
-        <aside class="panel" id="panel">
-          <h5>الغرف</h5>
-          <div class="room-row" data-r="1"><span>غرفة المقدم 1</span><b class="j">Join</b></div>
-          <div class="room-row" data-r="2"><span>غرفة المقدم 2</span><b class="j">Join</b></div>
-          <div class="room-row" data-r="3"><span>غرفة المقدم 3</span><b class="j">Join</b></div>
-          <div class="room-row" data-r="4"><span>غرفة المقدم 4</span><b class="j">Join</b></div>
-        </aside>
-        <div class="cursor" id="cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L9 19z" fill="#fff" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
-      </div>
-      <div class="caption" id="caption"></div>
-      <div class="demo-ctrl"><button class="btn ghost" id="replay">↺ إعادة العرض</button></div>
-    </div>
+  <div class="pane" id="pane-desk">
+    <ol class="steps">
+      <li class="step"><span class="n">1</span><div><h4>اضغط الغرفة التي تريدها</h4><p>من البطاقات في الأسفل اضغط <span class="kbd">ادخل الغرفة</span>، فتُفتح صفحة الاجتماع في تبويب جديد.</p></div></li>
+      <li class="step"><span class="n">2</span><div><h4>اختر طريقة الدخول</h4><p>اضغط <span class="kbd">المتابعة في هذا المتصفح</span> بدون تثبيت أي شيء، أو افتحه في تطبيق Teams إن كان مثبتًا.</p></div></li>
+      <li class="step"><span class="n">3</span><div><h4>اكتب اسمك وانضم</h4><p>أغلق الميكروفون والكاميرا ثم اضغط <span class="kbd">انضمام الآن</span>. تسمع مقدم هذه الغرفة فقط.</p></div></li>
+      <li class="step"><span class="n">4</span><div><h4>للانتقال إلى غرفة أخرى</h4><p>اضغط <span class="kbd">مغادرة</span>، ثم ارجع إلى تبويب هذه الصفحة واضغط غرفة ثانية.</p></div></li>
+    </ol>
   </div>
 </section>
 
-<!-- الدخول بعد التعليمات -->
-<section class="section">
-  <div class="glass join-teams">
-    <div>
-      <h3 class="sec-title"><span class="num">2</span>ادخل الاجتماع الآن</h3>
-      <p class="sec-sub" style="margin:0">اضغط الزر لفتح الاجتماع في تطبيق Teams، ثم اتبع الخطوات أعلاه لاختيار غرفة المقدم.</p>
-      <a class="btn primary" href="https://teams.microsoft.com/meet/3323326792994097?p=UPDb9htqnAKJvEW35D" target="_blank" rel="noopener">الانضمام عبر Microsoft Teams</a>
-      <p class="note">على الكمبيوتر يمكنك الدخول من المتصفح مباشرة باختيار «المتابعة في هذا المتصفح». على الجوال سيفتح الرابط تطبيق Teams.</p>
-    </div>
-    <div class="creds">
-      <div class="cred"><div><small>معرّف الاجتماع</small><b id="mid">332 332 679 299 409 7</b></div><button class="btn copy" data-copy="mid">نسخ</button></div>
-      <div class="cred"><div><small>رمز المرور</small><b id="mpw">GW95jP9G</b></div><button class="btn copy" data-copy="mpw">نسخ</button></div>
-      <p class="note" style="margin:0">إذا لم يعمل الرابط: افتح Teams ← <b>الانضمام إلى اجتماع</b> ← أدخل المعرّف ورمز المرور.</p>
-    </div>
+<!-- الغرف -->
+<section class="section rooms-sec">
+  <h3 class="sec-title"><span class="num">2</span>اختر الغرفة وادخل</h3>
+  <p class="sec-sub">الغرف الأربع تعمل في نفس الوقت من 8 صباحًا إلى 12 ظهرًا.</p>
+  <div class="rooms">
+    <a class="room glass reveal d1" href="https://teams.microsoft.com/meet/348069930291225?p=ohxbqajVybeliA3thB" target="_blank" rel="noopener">
+      <span class="ic">🛰️<b>1</b></span>
+      <span class="txt"><small><i class="live-dot"></i>الغرفة 1</small><h4>الرفع المساحي الأرضي والجوي</h4></span>
+      <span class="go">ادخل الغرفة ←</span>
+    </a>
+    <a class="room glass reveal d2" href="https://teams.microsoft.com/meet/331389623409520?p=oxqnVivi3iBf8LcDfG" target="_blank" rel="noopener">
+      <span class="ic">🗺️<b>2</b></span>
+      <span class="txt"><small><i class="live-dot"></i>الغرفة 2</small><h4>خرائط عُمان الذكية: برنامج QGIS</h4></span>
+      <span class="go">ادخل الغرفة ←</span>
+    </a>
+    <a class="room glass reveal d3" href="https://teams.microsoft.com/meet/382006648886552?p=Db4T4gUKDgtT80Udua" target="_blank" rel="noopener">
+      <span class="ic">🌍<b>3</b></span>
+      <span class="txt"><small><i class="live-dot"></i>الغرفة 3</small><h4>الخريطة الرقمية ببرنامج Google Earth</h4></span>
+      <span class="go">ادخل الغرفة ←</span>
+    </a>
+    <a class="room glass reveal d4" href="https://teams.microsoft.com/meet/3169772270765512?p=gxGPES48Y6tTL9EAxK" target="_blank" rel="noopener">
+      <span class="ic">🖼️<b>4</b></span>
+      <span class="txt"><small><i class="live-dot"></i>الغرفة 4</small><h4>المعرض</h4></span>
+      <span class="go">ادخل الغرفة ←</span>
+    </a>
   </div>
+  <div class="switch-note">🔁 <span>أبقِ هذه الصفحة مفتوحة. متى أردت مقدمًا آخر: غادر الاجتماع الحالي واضغط الغرفة الجديدة من هنا.</span></div>
 </section>
 
 <!-- نصائح -->
 <section class="section">
   <div class="tips">
-    <div class="tip glass"><div class="ic">🎙️</div><h4>الميكروفون مغلق</h4><p>أبقِ الميكروفون والكاميرا مغلقين حتى لا يُسمع صوتك داخل الغرفة.</p></div>
-    <div class="tip glass"><div class="ic">🔁</div><h4>تنقّل بحرية</h4><p>يمكنك تغيير الغرفة في أي وقت، بدون الخروج من الاجتماع.</p></div>
+    <div class="tip glass"><div class="ic">🎙️</div><h4>الميكروفون مغلق</h4><p>الميكروفون والكاميرا مغلقان للمشاهدين تلقائيًا، فلا يُسمع صوتك.</p></div>
+    <div class="tip glass"><div class="ic">🔁</div><h4>غرفة واحدة كل مرة</h4><p>غادر الغرفة الحالية قبل دخول غيرها حتى لا تسمع صوتين.</p></div>
     <div class="tip glass"><div class="ic">🎧</div><h4>سماعات أفضل</h4><p>السماعات تعطيك صوتًا أوضح وتمنع الصدى عن من حولك.</p></div>
-    <div class="tip glass"><div class="ic">📶</div><h4>انقطع الاتصال؟</h4><p>أعد فتح الرابط ثم اختر غرفتك من جديد من «الغرف».</p></div>
+    <div class="tip glass"><div class="ic">📶</div><h4>انقطع الاتصال؟</h4><p>ارجع إلى هذه الصفحة واضغط الغرفة نفسها مرة أخرى.</p></div>
   </div>
 </section>
 
 <script src="/theme.js"></script>
 <script>
-// نسخ المعرف ورمز المرور
-document.querySelectorAll('.copy').forEach((b) => {
-  b.onclick = async () => {
-    const txt = document.getElementById(b.dataset.copy).textContent.trim();
-    try { await navigator.clipboard.writeText(txt); } catch (e) {}
-    b.textContent = 'تم ✓'; b.classList.add('done');
-    setTimeout(() => { b.textContent = 'نسخ'; b.classList.remove('done'); }, 1600);
-  };
-});
-
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-// أدوات مشتركة لعرض متحرك داخل إطار
-function makeDemo(frame, pointer) {
-  let timers = [];
-  return {
-    wait: (ms) => new Promise((r) => timers.push(setTimeout(r, ms))),
-    stop() { timers.forEach(clearTimeout); timers = []; },
-    point(el) {
-      const f = frame.getBoundingClientRect(), r = el.getBoundingClientRect();
-      pointer.style.left = (r.left - f.left + r.width * 0.55) + 'px';
-      pointer.style.top = (r.top - f.top + r.height * 0.55) + 'px';
-    },
-    tap(el) {
-      const f = frame.getBoundingClientRect(), r = el.getBoundingClientRect();
-      const d = document.createElement('i'); d.className = 'ripple';
-      d.style.left = (r.left - f.left + r.width * 0.55) + 'px';
-      d.style.top = (r.top - f.top + r.height * 0.55) + 'px';
-      frame.appendChild(d); setTimeout(() => d.remove(), 700);
-      pointer.classList.add('press'); setTimeout(() => pointer.classList.remove('press'), 180);
-    },
-  };
-}
-function showRoom(view, who, label, sub, rows, n) {
-  rows.forEach((r) => {
-    const me = +r.dataset.r === n;
-    r.classList.toggle('current', me); r.classList.remove('target');
-    r.querySelector('.j').textContent = me ? '✓ هنا' : r.dataset.join;
-  });
-  view.classList.remove('swap'); void view.offsetWidth; view.classList.add('swap');
-  view.classList.toggle('in-room', n > 0); view.classList.toggle('speaking', n > 0);
-  who.textContent = n > 0 ? n : '◎';
-  label.textContent = n > 0 ? `غرفة المقدم ${n}` : 'الاجتماع الرئيسي';
-  sub.textContent = n > 0 ? 'تسمع هذا المقدم فقط 🔊' : 'اختر غرفة لتسمع مقدمها';
-}
-document.querySelectorAll('.room-row').forEach((r) => { r.dataset.join = r.querySelector('.j').textContent; });
-function stepper(list, caption) {
-  const items = [...list.querySelectorAll('.step')];
-  return (i, t) => { items.forEach((s, k) => s.classList.toggle('active', k === i)); caption.textContent = t; };
-}
-
-// ===== عرض الكمبيوتر =====
-const mock = document.getElementById('mock'), cursor = document.getElementById('cursor'), roomsBtn = document.getElementById('roomsBtn');
-const D = makeDemo(mock, cursor);
-const dRows = [...mock.querySelectorAll('.room-row')];
-const dStep = stepper(document.getElementById('steps'), document.getElementById('caption'));
-const dShow = (n) => showRoom(document.getElementById('roomView'), document.getElementById('who'), document.getElementById('roomLabel'), document.getElementById('roomSub'), dRows, n);
-async function dJoin(n, a, b) {
-  dStep(a.i, a.t); D.point(roomsBtn); await D.wait(1000);
-  D.tap(roomsBtn); roomsBtn.classList.add('on'); mock.classList.add('panel-open'); await D.wait(1100);
-  const row = mock.querySelector(`.room-row[data-r="${n}"]`);
-  dStep(b.i, b.t); row.classList.add('target'); D.point(row.querySelector('.j')); await D.wait(1100);
-  D.tap(row.querySelector('.j')); await D.wait(300);
-  dShow(n); mock.classList.remove('panel-open'); roomsBtn.classList.remove('on');
-}
-async function playDesk(from = 0) {
-  D.stop(); mock.classList.remove('panel-open'); roomsBtn.classList.remove('on'); dShow(0);
-  cursor.style.left = '50%'; cursor.style.top = '62%';
-  await D.wait(500);
-  if (from <= 1) await dJoin(2, { i: 0, t: 'اضغط «الغرف» في الشريط العلوي' }, { i: 1, t: 'اختر «غرفة المقدم 2» واضغط Join' });
-  else dShow(2);
-  dStep(2, 'أنت الآن تسمع المقدم 2 فقط'); cursor.style.left = '30%'; cursor.style.top = '70%';
-  await D.wait(2600);
-  await dJoin(3, { i: 3, t: 'للانتقال: اضغط «الغرف» مرة أخرى' }, { i: 3, t: 'اختر «غرفة المقدم 3» وانضم' });
-  dStep(2, 'انتقلت إلى المقدم 3 بدون الخروج من الاجتماع ✨');
-  await D.wait(3200); playDesk(0);
-}
-document.querySelectorAll('#steps .step').forEach((s) => s.onclick = () => playDesk(+s.dataset.i >= 2 ? 2 : 0));
-document.getElementById('replay').onclick = () => playDesk(0);
-
-// ===== عرض الجوال =====
-const phone = document.getElementById('phone'), finger = document.getElementById('finger');
-const P = makeDemo(phone, finger);
-const pJoin = document.getElementById('pJoin'), pCall = document.getElementById('pCall');
-const pMenu = document.getElementById('pMenu'), pRooms = document.getElementById('pRooms'), pMore = document.getElementById('pMore'), pRoomsOpt = document.getElementById('pRoomsOpt');
-const pRows = [...pRooms.querySelectorAll('.room-row')];
-const pStep = stepper(document.getElementById('psteps'), document.getElementById('pCaption'));
-const pShow = (n) => showRoom(document.getElementById('pView'), document.getElementById('pWho'), document.getElementById('pLabel'), document.getElementById('pSub'), pRows, n);
-function pReset() {
-  pJoin.classList.remove('hide'); pCall.classList.add('hide');
-  pMenu.classList.remove('open'); pRooms.classList.remove('open'); pMore.classList.remove('on'); pRoomsOpt.classList.remove('target');
-  pShow(0); finger.style.left = '50%'; finger.style.top = '55%';
-}
-async function pJoinRoom(n, label) {
-  pStep(label === 'first' ? 2 : 4, label === 'first' ? 'اضغط «⋯ المزيد» في الشريط السفلي' : 'للانتقال: «⋯ المزيد» مرة أخرى');
-  P.point(pMore); await P.wait(1000);
-  P.tap(pMore); pMore.classList.add('on'); pMenu.classList.add('open'); await P.wait(900);
-  pStep(label === 'first' ? 3 : 4, 'اختر «الغرف»');
-  pRoomsOpt.classList.add('target'); P.point(pRoomsOpt); await P.wait(1000);
-  P.tap(pRoomsOpt); await P.wait(250);
-  pMenu.classList.remove('open'); pRoomsOpt.classList.remove('target'); pRooms.classList.add('open'); await P.wait(900);
-  const row = pRooms.querySelector(`.room-row[data-r="${n}"]`);
-  pStep(label === 'first' ? 3 : 4, `اضغط «انضمام» بجانب غرفة المقدم ${n}`);
-  row.classList.add('target'); P.point(row.querySelector('.j')); await P.wait(1000);
-  P.tap(row.querySelector('.j')); await P.wait(300);
-  pRooms.classList.remove('open'); pMore.classList.remove('on'); pShow(n);
-}
-async function playPhone() {
-  P.stop(); pReset();
-  pStep(0, 'ثبّت تطبيق Microsoft Teams'); await P.wait(1800);
-  pStep(1, 'ادخل كضيف: اكتب اسمك ثم «انضمام الآن»');
-  P.point(document.getElementById('pJoinBtn')); await P.wait(1100);
-  P.tap(document.getElementById('pJoinBtn')); await P.wait(300);
-  pJoin.classList.add('hide'); pCall.classList.remove('hide'); finger.style.top = '45%'; await P.wait(1100);
-  await pJoinRoom(2, 'first');
-  pStep(3, 'أنت الآن تسمع المقدم 2 فقط 🔊'); finger.style.left = '70%'; finger.style.top = '40%';
-  await P.wait(2600);
-  await pJoinRoom(4, 'switch');
-  pStep(4, 'انتقلت إلى المقدم 4 ✨'); await P.wait(3000);
-  playPhone();
-}
-document.querySelectorAll('#psteps .step').forEach((s) => s.onclick = () => playPhone());
-document.getElementById('pReplay').onclick = () => playPhone();
-
-// ===== التبويبات (الجوال افتراضيًا على الشاشات الصغيرة) =====
 function openPane(name) {
   document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.pane === name));
   document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.id === 'pane-' + name));
-  D.stop(); P.stop();
-  if (reduce) { if (name === 'desk') { dShow(2); dStep(2, 'أنت داخل غرفة المقدم 2'); } else { pReset(); pStep(2, 'اضغط «⋯ المزيد» ثم «الغرف»'); } return; }
-  requestAnimationFrame(() => (name === 'desk' ? playDesk(0) : playPhone()));
 }
 document.querySelectorAll('.tab').forEach((t) => t.onclick = () => openPane(t.dataset.pane));
 const isPhone = matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
